@@ -5,11 +5,11 @@ import pipboy
 entries = {
     'General rolls': [
         '1d1',
-        '1d2',
-        '1d3',
-        '1d4',
-        '1d6',
-        '1d8'
+        'd4',
+        '1 d 2',
+        '111d44',
+        '1d8+5',
+        '1d20-2'
     ]
 }
 

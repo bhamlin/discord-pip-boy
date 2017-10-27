@@ -1,1 +1,1 @@
-pip install discord.py dice-notation
+pip install discord.py ply dice-notation
