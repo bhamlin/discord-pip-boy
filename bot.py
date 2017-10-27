@@ -16,8 +16,12 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
+    print('--------------------------------')
     line = message.content
-    if line.startswith('~pb ') and len(line) > 4:
+    fields = [x for x in dir(message) if not x.startswith('_')]
+    print({field: getattr(message, field) for field in fields})
+
+    if line.startswith('~p ') and len(line) > 3:
         counter = 0
         tmp = await client.send_message(message.channel, 'Calculating messages...')
         async for log in client.logs_from(message.channel, limit=100):
