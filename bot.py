@@ -4,7 +4,6 @@ import discord
 import asyncio
 
 import auth
-
 import pipboy
 
 from random import choice
@@ -35,12 +34,7 @@ async def on_message(message):
     fields = [x for x in dir(message) if not x.startswith('_')]
 
     if line.startswith('~p ') and len(line) > 3:
-        # print('--------------------------------')
-        # print({field: getattr(message, field) for field in fields})
         tmp = await client.send_message(message.channel, choice(__DELAYING))
-#        async for log in client.logs_from(message.channel, limit=100):
-#            if log.author == message.author:
-#                counter += 1
         stack, result = pipboy.parse(line[3:])
         if stack:
             await client.edit_message(tmp, 'Rolled: {}'.format(', '.join(map(str, stack))))
