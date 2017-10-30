@@ -4,6 +4,7 @@ import pipboy
 
 entries = {
     'General rolls': [
+        'fate',
         '10d6!',
         '2d1!',
         '1d1',
@@ -24,6 +25,7 @@ entries = {
 }
 
 for entry, tests in entries.items():
+    print(entry, ':')
     for test in tests:
-        print(test)
-        print('--', pipboy.parse(test))
+        print(' ', test)
+        print(' --', pipboy.parse(test))
