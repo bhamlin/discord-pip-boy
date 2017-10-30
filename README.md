@@ -1,6 +1,8 @@
 # discord-pip-boy
 Discord bot to track and roll your dice.
 
+Add to your server with: https://discordapp.com/oauth2/authorize?&client_id=373488008168734720&scope=bot&permissions=0
+
 
 ## Planned features
 <dl>
