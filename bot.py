@@ -5,6 +5,16 @@ import asyncio
 
 import auth
 
+import pipboy
+
+from random import choice
+
+__DELAYING = (
+    'Modernizing GURPs...',
+    'Readying against a charge...',
+    'Applying bonuses...'
+)
+
 client = discord.Client()
 
 @client.event
@@ -16,19 +26,20 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    print('--------------------------------')
     line = message.content
     fields = [x for x in dir(message) if not x.startswith('_')]
-    print({field: getattr(message, field) for field in fields})
 
     if line.startswith('~p ') and len(line) > 3:
-        counter = 0
-        tmp = await client.send_message(message.channel, 'Calculating messages...')
-        async for log in client.logs_from(message.channel, limit=100):
-            if log.author == message.author:
-                counter += 1
-
-        await client.edit_message(tmp, 'You have {} messages.'.format(counter))
+        print('--------------------------------')
+        print({field: getattr(message, field) for field in fields})
+        tmp = await client.send_message(message.channel, choice(__DELAYING))
+#        async for log in client.logs_from(message.channel, limit=100):
+#            if log.author == message.author:
+#                counter += 1
+        stack, result = pipboy.parse(line[3:])
+        await client.edit_message(tmp, 'Rolled: {}'.format(', '.join(map(str, stack))))
+        if result:
+            await client.send_message(message.channel, 'Result: {}'.format(str(result)))
     elif message.content.startswith('!sleep'):
         await asyncio.sleep(5)
         await client.send_message(message.channel, 'Done sleeping')
