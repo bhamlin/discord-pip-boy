@@ -22,7 +22,8 @@ __TEST_OPS = {
     '==': eq
 }
 
-__FATE = ('+', ' ', '-')
+#         +          -        ' '
+__FATE = ('\uff0b', '\u2212', '\u2610')
 
 def roll(count, sides, per_die=0):
     result = list()
@@ -85,9 +86,9 @@ def parse(content):
 
     if sum([1 for i in stack if i in __FATE]) > 0:
         result = {
-            '+': stack.count('+'),
-            '-': stack.count('-'),
-            'total': stack.count('+') - stack.count('-')
+            __FATE[0]: stack.count(__FATE[0]),
+            __FATE[1]: stack.count(__FATE[1]),
+            'total': stack.count(__FATE[0]) - stack.count(__FATE[1])
         }
     else:
         if DO_SUM:
@@ -106,7 +107,7 @@ def deunicode(content):
 
 def lex(content):
     # Attempt to comprehend what we've been given.
-    content = content.replace(' ', '').lower()
+    content = content.replace(' ', '').lower().strip()
     content = deunicode(content)
 
     actions = list()
@@ -115,42 +116,43 @@ def lex(content):
     i = 0
     n = len(content)
 
-    while i < n:
-        symbol = content[i]
-        symbol_p = str(content[i:i+2])
-        if symbol in __NUMBERS:
-            if symbol == 'f':
-                actions.append(symbol)
-                appending = False
-                value = 0
-            else:
-                if not appending:
+    if content == 'fate':
+        actions += [4, 'd', 'f']
+    else:
+        while i < n:
+            symbol = content[i]
+            symbol_p = str(content[i:i+2])
+            if symbol in __NUMBERS:
+                if symbol == 'f':
+                    actions.append(symbol)
+                    appending = False
                     value = 0
-                    appending = True
-                value *= 10
-                value += int(symbol)
-        else:
-            appending = False
-            actions.append(value)
-
-            if symbol == 'd':
-                if actions[-1] == 0:
-                    actions[-1] = 1
-                actions.append('d')
-            elif symbol in __OPERATORS:
-                actions.append(symbol)
-            elif symbol_p in __TEST_OPS:
-                actions.append(symbol_p)
-                i += 1
-            elif symbol == '!':
-                actions.append(symbol)
+                else:
+                    if not appending:
+                        value = 0
+                        appending = True
+                    value *= 10
+                    value += int(symbol)
             else:
-                print('!!', 'Unknown symbol:', symbol)
-        i += 1
-
-    if appending:
-        actions.append(value)
-    print('=', actions)
+                appending = False
+                actions.append(value)
+                if symbol == 'd':
+                    if actions[-1] == 0:
+                        actions[-1] = 1
+                    actions.append('d')
+                elif symbol in __OPERATORS:
+                    actions.append(symbol)
+                elif symbol_p in __TEST_OPS:
+                    actions.append(symbol_p)
+                    i += 1
+                elif symbol == '!':
+                    actions.append(symbol)
+                else:
+                    return (None, None)
+            i += 1
+    
+        if appending:
+            actions.append(value)
 
     return actions
 
