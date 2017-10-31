@@ -1,1 +1,5 @@
-pip install discord.py ply dice-notation
+virtualenv env
+
+. env/bin/activate
+
+pip install discord.py pydblite
