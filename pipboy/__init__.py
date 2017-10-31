@@ -52,7 +52,7 @@ def parse(content):
         part = parts[i]
         if part == 'd':
             u, v = parts[i-1], parts[i+1]
-            stack += roll(u, v)
+            stack.append(roll(u, v))
             last_rolled_sides = v
             i += 1
         elif part in __OPERATORS:
@@ -74,6 +74,7 @@ def parse(content):
                 explode_limit -= 1
         elif part in __TEST_OPS:
             DO_SUM = False
+            stack = stack[-1]
             op = __TEST_OPS[part]
             value = parts[i + 1]
             output = [x for x in stack if op(x, value)]
@@ -81,10 +82,17 @@ def parse(content):
                 result = output
             else:
                 result = None
+        elif part == 'k':
+            i += 1
+            roll_count = parts[i]
+            last_roll = stack.pop()
+            last_roll.sort()
+            stack.append(last_roll[-roll_count:])
 
         i += 1
 
-    if sum([1 for i in stack if i in __FATE]) > 0:
+    if len(stack) == 1 and sum([1 for i in stack[0] if i in __FATE]) > 0:
+        stack = stack[0]
         result = {
             __FATE[0]: stack.count(__FATE[0]),
             __FATE[1]: stack.count(__FATE[1]),
@@ -92,7 +100,9 @@ def parse(content):
         }
     else:
         if DO_SUM:
-            result += sum(stack)
+            result = list()
+            for group in stack:
+                result.append(sum(group))
     return (stack, result)
 
 def deunicode(content):
@@ -145,8 +155,12 @@ def lex(content):
                 elif symbol_p in __TEST_OPS:
                     actions.append(symbol_p)
                     i += 1
-                elif symbol == '!':
+                elif symbol in '!k':
                     actions.append(symbol)
+                elif symbol == 'x':
+                    i += 1
+                    count = content[i]
+                    actions = actions * int(count)
                 else:
                     return (None, None)
             i += 1
