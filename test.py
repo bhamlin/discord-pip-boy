@@ -4,6 +4,8 @@ import pipboy
 
 entries = {
     'General rolls': [
+        '4d6k3',
+        '4d6k3x6',
         'fate',
         '10d6!',
         '2d1!',
@@ -17,9 +19,6 @@ entries = {
         '+5',
         '-4',
         '4d6>=4',
-        '4d6k2>=4',
-        '4d6>=4k2',
-        '2q4d6>=4',
         '10df',
     ]
 }
