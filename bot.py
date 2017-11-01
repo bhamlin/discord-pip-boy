@@ -42,8 +42,15 @@ async def on_message(message):
             await client.send_message(message.channel, 'Result: {}'.format(str(result)))
         if not stack and not result:
             await client.edit_message(tmp, '''I don't have a response for you... *[error?]*''')
-    elif message.content.startswith('!sleep'):
-        await asyncio.sleep(5)
-        await client.send_message(message.channel, 'Done sleeping')
+    elif line.startswith('~g ') and len(line) > 3:
+        tmp = await client.send_message(message.channel, choice(__DELAYING))
+        response = pipboy.game_opt(message)
+        if response:
+            await client.edit_message(tmp, response)
+        else:
+            await client.edit_message(tmp, '''I don't have a response for you... *[error?]*''')
+#    elif message.content.startswith('!sleep'):
+#        await asyncio.sleep(5)
+#        await client.send_message(message.channel, 'Done sleeping')
 
 client.run(auth.token)
