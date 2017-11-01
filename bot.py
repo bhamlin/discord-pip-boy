@@ -6,6 +6,7 @@ import asyncio
 import auth
 import pipboy
 
+from datetime import datetime
 from random import choice
 
 __DELAYING = (
@@ -26,6 +27,7 @@ async def on_ready():
     print('Logged in as')
     print(client.user.name)
     print(client.user.id)
+    print(str(datetime.now()))
     print('------')
 
 @client.event
